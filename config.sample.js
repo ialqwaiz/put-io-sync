@@ -11,5 +11,10 @@ module.exports = {
     'enabled': false,
     'userkey': 'user key from here: https://pushover.net/ ',
     'appkey': 'create an key here: https://pushover.net/apps/build '
+  },
+  'filebot': {
+    'enable': true,
+    'path': 'filebot',
+    'format': '/some/path/{n}/{n} - {s00e00} - {t}'
   }
 };

@@ -50,15 +50,29 @@ if (tvShowDir) {
   matcher = function() {};
 }
 
+function isProbablyVideoFileSize(fileSize) {
+  return fileSize > 20 * 1024 * 1024;
+}
+
 function deleteShowIfCompleted(api, fileNode, stat) {
   if (stat && stat.size == fileNode.size) {
-    // this file was allready downloaded - so we might delete it
+    // this file was already downloaded, deleting
     console.log('deleting ' + fileNode.name + ' from put.io');
     api.files.delete(fileNode.id);
     return true;
   };
 
   return false;
+}
+
+function processWithFilebot(filePath, stat) {
+  if (isProbablyVideoFileSize(stat.size)) {
+    var shellCommand = config.filebot.path + ' -rename --format "' + config.filebot.format + '" ' + filePath;
+
+    console.log('processing ' + filePath + ' with filebot');
+    console.log(shellCommand);
+    var result = execSync.stdout(shellCommand);
+  }
 }
 
 function sendRPCRequest(methodName, params) {
@@ -110,6 +124,9 @@ function listDir(directoryId, localPath, isChildDir) {
 
             fs.stat(finalPath, function gotFileStat(err, stat) {
               if (deleteShowIfCompleted(api, fileNode, stat)) {
+                if (config.filebot.enable) {
+                  processWithFilebot(finalPath, stat);
+                }
                 return;
               }
 
@@ -132,8 +149,11 @@ function listDir(directoryId, localPath, isChildDir) {
 
                 var afterStat = fs.statSync(finalPath);
                 deleteShowIfCompleted(api, fileNode, afterStat);
+                if (config.filebot.enable) {
+                  processWithFilebot(finalPath, afterStat);
+                }
 
-                if (fileNode.size > 20 * 1024 * 1024) {
+                if (isProbablyVideoFileSize(fileNode.size)) {
                   if (tvshow) {
                     push.send('put.io sync', 'Downloaded an episode of ' + tvshow.name);
                   } else {
