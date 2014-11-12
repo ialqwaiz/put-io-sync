@@ -34,6 +34,11 @@ var args = argv.option([{
   type: 'path',
   description: 'local dir to sync to'
 }, {
+  name: 'filebot-config',
+  short: 'f',
+  type: 'string',
+  description: '(optional) filebot config key'
+}, {
   name: 'tvshow-dir',
   short: 's',
   type: 'path',
@@ -43,6 +48,8 @@ var args = argv.option([{
 var directoryId = args.options['directory-id'] || 0;
 var localPath = args.options['local-path'];
 var tvShowDir = args.options['tvshow-dir'];
+var filebotConfigKey = args.options['filebot-config'];
+var filebotConfig = config.filebot[filebotConfigKey] || {};
 var matcher = null;
 if (tvShowDir) {
   matcher = TVShowMatcher(tvShowDir);
@@ -67,11 +74,11 @@ function deleteShowIfCompleted(api, fileNode, stat) {
 
 function processWithFilebot(filePath, stat) {
   if (isProbablyVideoFileSize(stat.size)) {
-    var shellCommand = config.filebot.path + ' -rename --format "' + config.filebot.format + '" ' + filePath;
+    var shellCommand = filebotConfig.path + ' -rename --format "' + filebotConfig.format + '" "' + filePath + '"';
 
     console.log('processing ' + filePath + ' with filebot');
     console.log(shellCommand);
-    var result = execSync.stdout(shellCommand);
+    execSync.run(shellCommand);
   }
 }
 
@@ -124,7 +131,7 @@ function listDir(directoryId, localPath, isChildDir) {
 
             fs.stat(finalPath, function gotFileStat(err, stat) {
               if (deleteShowIfCompleted(api, fileNode, stat)) {
-                if (config.filebot.enable) {
+                if (filebotConfig.enable) {
                   processWithFilebot(finalPath, stat);
                 }
                 return;
@@ -145,11 +152,11 @@ function listDir(directoryId, localPath, isChildDir) {
 
                 console.log('downloading ' + localFilePath + '...');
                 console.log(shellCommand);
-                var result = execSync.stdout(shellCommand);
+                execSync.run(shellCommand);
 
                 var afterStat = fs.statSync(finalPath);
                 deleteShowIfCompleted(api, fileNode, afterStat);
-                if (config.filebot.enable) {
+                if (filebotConfig.enable) {
                   processWithFilebot(finalPath, afterStat);
                 }
 

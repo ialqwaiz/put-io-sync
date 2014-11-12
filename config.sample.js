@@ -13,8 +13,15 @@ module.exports = {
     'appkey': 'create an key here: https://pushover.net/apps/build '
   },
   'filebot': {
-    'enable': true,
-    'path': 'filebot',
-    'format': '/some/path/{n}/{n} - {s00e00} - {t}'
+		'configKey e.g. "tvshows"': {
+			'enable': true,
+			'path': 'filebot',
+			'format': '/some/path/{n}/{n} - {s00e00} - {t}'
+		},
+		'configKey e.g. "movies"': {
+			'enable': true,
+			'path': 'filebot',
+			'format': '/some/path/{n}{t}'
+		}
   }
 };
