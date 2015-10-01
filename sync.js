@@ -61,12 +61,16 @@ function isProbablyVideoFileSize(fileSize) {
   return fileSize > 20 * 1024 * 1024;
 }
 
-function deleteShowIfCompleted(api, fileNode, stat) {
+function deleteShowIfCompleted(api, fileNode, stat, filePath) {
+	var partialDownloadExists = fs.existsSync(filePath+'.aria2');
   if (stat && stat.size == fileNode.size) {
-    // this file was already downloaded, deleting
-    console.log('deleting ' + fileNode.name + ' from put.io');
-    api.files.delete(fileNode.id);
-    return true;
+		// ensure that there isn't a partial download
+		if (!partialDownloadExists) {
+			// this file was already downloaded, deleting
+			console.log('deleting ' + fileNode.name + ' from put.io');
+			api.files.delete(fileNode.id);
+			return true;
+		}
   };
 
   return false;
@@ -74,7 +78,7 @@ function deleteShowIfCompleted(api, fileNode, stat) {
 
 function processWithFilebot(filePath, stat) {
   if (isProbablyVideoFileSize(stat.size)) {
-    var shellCommand = filebotConfig.path + ' -rename --format "' + filebotConfig.format + '" "' + filePath + '"';
+    var shellCommand = filebotConfig.path + ' -rename -non-strict --format "' + filebotConfig.format + '" "' + filePath + '"';
 
     console.log('processing ' + filePath + ' with filebot');
     console.log(shellCommand);
@@ -130,7 +134,7 @@ function listDir(directoryId, localPath, isChildDir) {
             var finalPath = fileDir + '/' + fileNode.name;
 
             fs.stat(finalPath, function gotFileStat(err, stat) {
-              if (deleteShowIfCompleted(api, fileNode, stat)) {
+              if (deleteShowIfCompleted(api, fileNode, stat, finalPath)) {
                 if (filebotConfig.enable) {
                   processWithFilebot(finalPath, stat);
                 }
@@ -148,14 +152,14 @@ function listDir(directoryId, localPath, isChildDir) {
                 }
 
               } else {
-                var shellCommand = config.aria2c.path + ' -d "' + fileDir + '" "' + api.files.download(fileNode.id) + '"';
+                var shellCommand = config.aria2c.path + ' -x6 -d "' + fileDir + '" "' + api.files.download(fileNode.id) + '"';
 
                 console.log('downloading ' + localFilePath + '...');
                 console.log(shellCommand);
                 execSync.run(shellCommand);
 
                 var afterStat = fs.statSync(finalPath);
-                deleteShowIfCompleted(api, fileNode, afterStat);
+                deleteShowIfCompleted(api, fileNode, afterStat, finalPath);
                 if (filebotConfig.enable) {
                   processWithFilebot(finalPath, afterStat);
                 }

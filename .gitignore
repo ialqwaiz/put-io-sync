@@ -1,6 +1,4 @@
-.idea/put-io-sync.iml
-.idea/scopes/scope_settings.xml
+logs
 node_modules/
 config.js
-.idea/jsLibraryMappings.xml
-.idea/codeStyleSettings.xml
+bin/*
