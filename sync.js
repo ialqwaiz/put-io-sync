@@ -78,7 +78,7 @@ function deleteShowIfCompleted(api, fileNode, stat, filePath) {
 
 function processWithFilebot(filePath, stat) {
   if (isProbablyVideoFileSize(stat.size)) {
-    var shellCommand = filebotConfig.path + ' -rename -non-strict --format "' + filebotConfig.format + '" "' + filePath + '"';
+    var shellCommand = filebotConfig.path + ' --conflict override -rename -no-xattr -non-strict --format "' + filebotConfig.format + '" "' + filePath + '"';
 
     console.log('processing ' + filePath + ' with filebot');
     console.log(shellCommand);
@@ -152,7 +152,7 @@ function listDir(directoryId, localPath, isChildDir) {
                 }
 
               } else {
-                var shellCommand = config.aria2c.path + ' -x6 -d "' + fileDir + '" "' + api.files.download(fileNode.id) + '"';
+                var shellCommand = config.aria2c.path + ' --file-allocation=none -x6 -d "' + fileDir + '" "' + api.files.download(fileNode.id) + '"';
 
                 console.log('downloading ' + localFilePath + '...');
                 console.log(shellCommand);
