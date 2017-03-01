@@ -62,15 +62,15 @@ function isProbablyVideoFileSize(fileSize) {
 }
 
 function deleteShowIfCompleted(api, fileNode, stat, filePath) {
-	var partialDownloadExists = fs.existsSync(filePath+'.aria2');
+  var partialDownloadExists = fs.existsSync(filePath+'.aria2');
   if (stat && stat.size == fileNode.size) {
-		// ensure that there isn't a partial download
-		if (!partialDownloadExists) {
-			// this file was already downloaded, deleting
-			console.log('deleting ' + fileNode.name + ' from put.io');
-			api.files.delete(fileNode.id);
-			return true;
-		}
+    // ensure that there isn't a partial download
+    if (!partialDownloadExists) {
+      // this file was already downloaded, deleting
+      console.log('deleting ' + fileNode.name + ' from put.io');
+      api.files.delete(fileNode.id);
+      return true;
+    }
   };
 
   return false;
