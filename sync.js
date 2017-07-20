@@ -40,8 +40,8 @@ if (fs.existsSync(lockFile)) {
   });
   fs.open(lockFile, 'w', 0666, function(err, fd) {
     fs.closeSync(fd);
-  });
 
-  var processor = new DirectoryProcessor(appConfig, directoryId, localPath, false);
-  processor.run();
+    var processor = new DirectoryProcessor(appConfig, directoryId, localPath, false);
+    processor.run();
+  });
 }
