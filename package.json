@@ -1,9 +1,11 @@
 {
   "dependencies": {
-    "put.io-v2": "*",
     "argv": "*",
-    "underscore": "*",
-    "execSync": "*",
-    "longjohn": "*"
+    "bluebird": "^3.5.1",
+    "longjohn": "*",
+    "put.io-node": "^1.0.3",
+    "put.io-v2": "*",
+    "typings": "^2.1.1",
+    "underscore": "*"
   }
 }
