@@ -19,6 +19,7 @@ After downloading an file the script can optionaly notify you via Pushpin.
 
 # Installation
 
+- `npm install typings --global` # requirement of put.io package
 - `npm install`
 - `cp config.sample.js config.js`
 - you need to enter some API keys into the config.js file. look at the links inside this file
