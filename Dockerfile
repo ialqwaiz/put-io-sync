@@ -11,6 +11,7 @@ RUN git clone https://github.com/ialqwaiz/put-io-sync.git
 WORKDIR put-io-sync
 RUN npm install .
 
+RUN mkdir -p /etc/cron.d
 RUN mv /put-io-sync/crontab /etc/cron.d/putio-cron
 RUN mv /put-io-sync/putio_script.sh /putio_script.sh
 RUN chmod +x /putio_script.sh
