@@ -16,6 +16,7 @@ RUN mv /put-io-sync/crontab /etc/cron.d/putio-cron
 RUN mv /put-io-sync/putio_script.sh /putio_script.sh
 RUN chmod +x /putio_script.sh
 RUN chmod 0644 /etc/cron.d/putio-cron
+RUN crontab /etc/cron.d/putio-cron
 RUN touch /var/log/cron.log
 
 ENV PUTIO_TOKEN=0
