@@ -1,17 +1,18 @@
 FROM hypriot/rpi-node
 
 RUN apt-get update
-RUN apt-get install -y aria2
-RUN apt-get install -y cron
-RUN rm -rf /var/lib/apt/lists/*  
+RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install -y --no-install-recommends aria2
+RUN apt-get install -y --no-install-recommends cron
+RUN rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
 RUN git clone https://github.com/ialqwaiz/put-io-sync.git
 WORKDIR put-io-sync
 RUN npm install .
 
-ADD crontab /etc/cron.d/putio-cron
-ADD putio_script.sh /putio_script.sh
+RUN mv /put-io-sync/crontab /etc/cron.d/putio-cron
+RUN mv /put-io-sync/putio_script.sh /putio_script.sh
 RUN chmod +x /putio_script.sh
 RUN chmod 0644 /etc/cron.d/putio-cron
 RUN touch /var/log/cron.log
