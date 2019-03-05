@@ -1,10 +1,9 @@
 FROM hypriot/rpi-node
 
-RUN apt-get update \
-    && apt-get install -y \
-    aria2 \
-    cron \
-    && rm -rf /var/lib/apt/lists/*  
+RUN apt-get update
+RUN apt-get install -y aria2
+RUN apt-get install -y cron
+RUN rm -rf /var/lib/apt/lists/*  
 
 WORKDIR /
 RUN git clone https://github.com/ialqwaiz/put-io-sync.git
