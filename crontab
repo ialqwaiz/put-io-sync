@@ -1,2 +1,2 @@
-* * * * * root /putio_script.sh
-#
+* * * * * root /putio_script.sh > /putio.log
+# end
